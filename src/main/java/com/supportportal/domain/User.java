@@ -1,10 +1,13 @@
 package com.supportportal.domain;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
+@Builder
 public class User implements Serializable {
 
     @Id
