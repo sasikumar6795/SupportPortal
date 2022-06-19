@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         LOGGER.info("Returning found user by userName: " + userName);
         return userPrincipal;
     }
-
     @Override
     public User register(String firstName, String lastName, String userName, String email) {
 
@@ -87,23 +86,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<User> getUsers() {
-        return null;
+        return userRepository.findAll();
     }
 
     @Override
     public User findByUserName(String userName) {
-        return null;
+        return userRepository.findUserByUserName(userName);
     }
 
     @Override
     public User findUserByEmail(String email) {
-        return null;
+
+        return userRepository.findUserByEmail(email);
     }
 
     public User validateNewUserNameAndEmail(String currentUserName, String newUserName, String newEmail)
     {
-        User userByUserName = userRepository.findUserByUserName(newUserName);
-        User userByEmail = userRepository.findUserByEmail(newEmail);
+        User userByUserName = findByUserName(newUserName);
+        User userByEmail = findUserByEmail(newEmail);
         if(StringUtils.isNotBlank(currentUserName))
         {
             User currentUser = userRepository.findUserByUserName(currentUserName);
