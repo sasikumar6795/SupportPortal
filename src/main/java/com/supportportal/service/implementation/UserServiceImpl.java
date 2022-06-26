@@ -6,6 +6,7 @@ import com.supportportal.enumeration.Role;
 import com.supportportal.exception.EmailExistException;
 import com.supportportal.exception.UserNameExistException;
 import com.supportportal.repository.UserRepository;
+import com.supportportal.service.LoginAttempt;
 import com.supportportal.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -39,9 +40,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    private LoginAttempt loginAttempt;
+
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,  LoginAttempt loginAttempt) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.loginAttempt = loginAttempt;
     }
 
     @Override
@@ -52,7 +56,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             LOGGER.error("User not Found by userName: "+userName);
             throw new UsernameNotFoundException("User not Found by userName: "+userName);
         }
-
+        validateLoginAttempt(user);
         user.setLastLoginDateDisplay(user.getLastLoginDate());
         user.setLastLoginDate(new Date());
         userRepository.save(user);
@@ -61,6 +65,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         LOGGER.info("Returning found user by userName: " + userName);
         return userPrincipal;
     }
+
+    private void validateLoginAttempt(User user) {
+        if(user.isNotLocked())
+        {
+            if(loginAttempt.hasExceededMaxAttempts(user.getUserName())){
+                user.setNotLocked(false);
+            }else {
+                user.setNotLocked(true);
+            }
+        }
+        else
+        {
+           loginAttempt.evictUserFromLoginAttemptCache(user.getUserName());
+        }
+    }
+
     @Override
     public User register(String firstName, String lastName, String userName, String email) {
 
