@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.supportportal.enumeration.Role.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Slf4j
 @Service
@@ -63,7 +64,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User register(String firstName, String lastName, String userName, String email) {
 
-        validateNewUserNameAndEmail(userName,StringUtils.EMPTY,email);
+        validateNewUserNameAndEmail(EMPTY, userName,email);
         String password=generatePassword();
         String encodedPassword=encodePasswordMethod(password);
         User user = User.builder()
@@ -72,6 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .lastName(lastName)
                 .userName(userName)
                 .isActive(true)
+                .email(email)
                 .isNotLocked(true)
                 .role(ROLE_USER.name())
                 .authorities(ROLE_USER.getAuthorities())
@@ -102,31 +104,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     public User validateNewUserNameAndEmail(String currentUserName, String newUserName, String newEmail)
     {
-        User userByUserName = findByUserName(newUserName);
-        User userByEmail = findUserByEmail(newEmail);
-        if(StringUtils.isNotBlank(currentUserName))
+        User userByNewUserName = findByUserName(newUserName);
+        User userByNewEmail = findUserByEmail(newEmail);
+        if(isNotBlank(currentUserName))
         {
             User currentUser = userRepository.findUserByUserName(currentUserName);
             if(currentUser==null)
             {
                 throw new UsernameNotFoundException("No user found by userName "+ currentUserName);
             }
-            if(userByUserName!=null&& !currentUser.getId().equals(userByUserName.getId()))
+            if(userByNewUserName!=null&& !currentUser.getId().equals(userByNewUserName.getId()))
             {
-                throw new UserNameExistException("Username already exits "+ userByUserName);
+                throw new UserNameExistException("Username already exits "+ userByNewUserName);
             }
-            if(userByEmail!=null && !currentUser.getId().equals(userByEmail.getId()))
+            if(userByNewEmail!=null && !currentUser.getId().equals(userByNewEmail.getId()))
             {
-                throw new EmailExistException("Email already taken "+ userByEmail);
+                throw new EmailExistException("Email already taken "+ userByNewEmail);
             }
             return currentUser;
         }
         else
         {
-            if(userByUserName!=null)
-                throw new UserNameExistException("Username already exits "+ userByUserName);
-            if(userByEmail!=null)
-                throw new EmailExistException("Email already taken "+ userByEmail);
+            if(userByNewUserName!=null)
+                throw new UserNameExistException("Username already exits "+ userByNewUserName);
+            if(userByNewEmail!=null)
+                throw new EmailExistException("Email already taken "+ userByNewEmail);
             return null;
         }
     }

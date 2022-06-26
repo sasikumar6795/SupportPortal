@@ -98,9 +98,15 @@ public class JWTTokenProvider {
     private  String[] generateClaimsFromUser(UserPrincipal userPrincipal)
     {
         List<String> authorities = new ArrayList<>();
-        return userPrincipal.getAuthorities().stream()
+        List<Boolean> listOfAuthorities = userPrincipal.getAuthorities().stream()
                 .map(grantedAuthority -> authorities.add(grantedAuthority.getAuthority()))
-                .collect(Collectors.toList())
-                .toArray(new String[0]);
+                .collect(Collectors.toList());
+        return authorities.toArray(new String[0]);
+
+//        List<String> authorities = new ArrayList<>();
+//        for (GrantedAuthority grantedAuthority : userPrincipal.getAuthorities()){
+//            authorities.add(grantedAuthority.getAuthority());
+//        }
+//        return authorities.toArray(new String[0]);
     }
 }
