@@ -6,6 +6,7 @@ import com.supportportal.enumeration.Role;
 import com.supportportal.exception.EmailExistException;
 import com.supportportal.exception.UserNameExistException;
 import com.supportportal.repository.UserRepository;
+import com.supportportal.service.EmailService;
 import com.supportportal.service.LoginAttempt;
 import com.supportportal.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,10 +44,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private LoginAttempt loginAttempt;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,  LoginAttempt loginAttempt) {
+    private EmailService emailService;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,  LoginAttempt loginAttempt, EmailService emailService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.loginAttempt = loginAttempt;
+        this.emailService = emailService;
     }
 
     @Override
@@ -69,6 +75,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private void validateLoginAttempt(User user) {
         if(user.isNotLocked())
         {
+            loginAttempt.addUserToLoginAttempts(user.getUserName());
             if(loginAttempt.hasExceededMaxAttempts(user.getUserName())){
                 user.setNotLocked(false);
             }else {
@@ -103,6 +110,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .build();
         userRepository.save(user);
         LOGGER.info("New user password: "+ password);
+        emailService.sendNewPasswordEmail(firstName,password,email);
         return user;
     }
 

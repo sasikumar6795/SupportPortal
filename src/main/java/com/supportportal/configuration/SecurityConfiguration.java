@@ -5,6 +5,7 @@ import com.supportportal.filter.JWTAccessDeniedHandler;
 import com.supportportal.filter.JWTAuthorizationEntryPoint;
 import com.supportportal.filter.JWTAuthorizationFilter;
 import com.supportportal.utility.JWTTokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter  {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private UserDetailsService userDetailsService;
 
+    @Autowired
     public SecurityConfiguration(JWTTokenProvider jwtTokenProvider,
                                  JWTAuthorizationEntryPoint jwtAuthorizationEntryPoint,
                                  JWTAuthorizationFilter jwtAuthorizationFilter,

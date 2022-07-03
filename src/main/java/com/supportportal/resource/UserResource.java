@@ -5,6 +5,7 @@ import com.supportportal.domain.UserPrincipal;
 import com.supportportal.exception.ExceptionHandling;
 import com.supportportal.service.UserService;
 import com.supportportal.utility.JWTTokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ public class UserResource extends ExceptionHandling {
     private AuthenticationManager authenticationManager;
     private JWTTokenProvider jwtTokenProvider;
 
+    @Autowired
     public UserResource(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
