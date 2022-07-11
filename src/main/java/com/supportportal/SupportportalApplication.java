@@ -8,14 +8,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+
+import static com.supportportal.constant.FileConstant.USER_FOLDER;
 
 @SpringBootApplication
 public class SupportportalApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(SupportportalApplication.class, args);
+
+		new File(USER_FOLDER).mkdirs();
 	}
 
 	@Bean
