@@ -66,7 +66,7 @@ public class UserResource extends ExceptionHandling {
                                            @RequestParam("email") String email,
                                            @RequestParam("role") String role,
                                            @RequestParam("isActive") String isActive,
-                                           @RequestParam("nonLocked") String nonLocked,
+                                           @RequestParam("isNonLocked") String nonLocked,
                                            @RequestParam(value="profileImage", required = false) MultipartFile profileImage){
         Optional<User> newUser = userService.addNewUser(firstName, lastName, userName, email, role, Boolean.parseBoolean(isActive), Boolean.parseBoolean(nonLocked), profileImage);
         return new ResponseEntity(newUser, OK);
@@ -111,7 +111,7 @@ public class UserResource extends ExceptionHandling {
     public ResponseEntity<HttpResponse> deleteUser(@PathVariable("id") long id)
     {
         userService.deleteUser(id);
-        return response(NO_CONTENT, UserImplementationConstant.USER_DELETED_SUCCESSFULLY);
+        return response(OK, UserImplementationConstant.USER_DELETED_SUCCESSFULLY);
     }
 
     @PostMapping("/updateProfileImage")

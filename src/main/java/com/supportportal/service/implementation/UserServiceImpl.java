@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<User> addNewUser(String firstName, String lastName, String userName, String email, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) {
         User addNewUserValidated = validateNewUserNameAndEmail(EMPTY, userName,email);
-        if(addNewUserValidated==null)
+        if(addNewUserValidated!=null)
         {
             return Optional.empty();
         }
