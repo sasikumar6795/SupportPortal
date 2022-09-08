@@ -1,9 +1,6 @@
 package com.supportportal.service;
 
 import com.supportportal.domain.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -23,7 +20,7 @@ public interface UserService {
 
     Optional<User> updateUser(String currentUserName, String newFirstName, String newLastName, String newUserName, String newEmail, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage);
 
-    void deleteUser(long id);
+    void deleteUser(String userName);
 
     void resetPassword(String email);
 
